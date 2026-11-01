@@ -634,7 +634,7 @@
                             id="speedSlider"
                             min="0.5"
                             max="5"
-                            step="0.5"
+                            step="0.25"
                             value="2"
                         >
                         <span class="slider-value" id="speedValue">2.0x</span>
@@ -737,6 +737,10 @@
             currentSpeed: document.getElementById('currentSpeed')
         };
 
+        function formatSpeed(speed) {
+            return speed.toFixed(2).replace(/0$/, '') + 'x';
+        }
+
         // Load state from localStorage
         function loadState() {
             const saved = localStorage.getItem('teleprompterState');
@@ -748,7 +752,7 @@
 
                 elements.scriptInput.value = state.script;
                 elements.speedSlider.value = state.scrollSpeed;
-                elements.speedValue.textContent = state.scrollSpeed.toFixed(1) + 'x';
+                elements.speedValue.textContent = formatSpeed(state.scrollSpeed);
 
                 elements.sizeButtons.forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.size === state.textSize);
@@ -774,8 +778,8 @@
         // Speed slider handler
         elements.speedSlider.addEventListener('input', (e) => {
             state.scrollSpeed = parseFloat(e.target.value);
-            elements.speedValue.textContent = state.scrollSpeed.toFixed(1) + 'x';
-            elements.currentSpeed.textContent = state.scrollSpeed.toFixed(1) + 'x';
+            elements.speedValue.textContent = formatSpeed(state.scrollSpeed);
+            elements.currentSpeed.textContent = formatSpeed(state.scrollSpeed);
             saveState();
         });
 
@@ -826,7 +830,7 @@
             // Prepare teleprompter
             elements.scriptDisplay.textContent = state.script;
             elements.scriptDisplay.className = `script-display text-${state.textSize}`;
-            elements.currentSpeed.textContent = state.scrollSpeed.toFixed(1) + 'x';
+            elements.currentSpeed.textContent = formatSpeed(state.scrollSpeed);
 
             // Show teleprompter mode
             elements.editMode.style.display = 'none';
@@ -928,8 +932,8 @@
         function adjustSpeed(delta) {
             state.scrollSpeed = Math.max(0.5, Math.min(5, state.scrollSpeed + delta));
             elements.speedSlider.value = state.scrollSpeed;
-            elements.speedValue.textContent = state.scrollSpeed.toFixed(1) + 'x';
-            elements.currentSpeed.textContent = state.scrollSpeed.toFixed(1) + 'x';
+            elements.speedValue.textContent = formatSpeed(state.scrollSpeed);
+            elements.currentSpeed.textContent = formatSpeed(state.scrollSpeed);
             saveState();
 
             // Show speed indicator
@@ -975,11 +979,11 @@
                     break;
                 case 'ArrowUp':
                     e.preventDefault();
-                    adjustSpeed(0.5);
+                    adjustSpeed(0.25);
                     break;
                 case 'ArrowDown':
                     e.preventDefault();
-                    adjustSpeed(-0.5);
+                    adjustSpeed(-0.25);
                     break;
                 case '+':
                 case '=':
