@@ -1,4 +1,4 @@
-# Teleprompter Web App - Requirements Document
+# Prompter - Requirements Document
 
 ## Overview
 

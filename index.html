@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teleprompter Pro</title>
+    <title>Prompter</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Spectral:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&family=Spectral:wght@400;500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #0a0a0a;
@@ -20,9 +20,9 @@
             --text-muted: #666666;
             --border-subtle: #333333;
 
-            --font-display: 'Bebas Neue', sans-serif;
+            --font-display: 'Oxygen', sans-serif;
             --font-body: 'Spectral', serif;
-            --font-mono: 'Space Mono', monospace;
+            --font-mono: 'Roboto', sans-serif;
 
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -117,7 +117,7 @@
         .logo-text {
             font-family: var(--font-display);
             font-size: 2rem;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-amber) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -163,10 +163,8 @@
         .section-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
-            letter-spacing: 2px;
             color: var(--text-secondary);
             margin-bottom: 1rem;
-            text-transform: uppercase;
         }
 
         .script-input-section {
@@ -336,12 +334,11 @@
             padding: 1.5rem 4rem;
             font-family: var(--font-display);
             font-size: 2rem;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s var(--transition-smooth);
             box-shadow: 0 8px 24px rgba(212, 165, 116, 0.4);
-            text-transform: uppercase;
             position: relative;
             overflow: hidden;
         }
@@ -603,8 +600,7 @@
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">TP</div>
-                    <h1 class="logo-text">Teleprompter Pro</h1>
+                    <h1 class="logo-text">Prompter</h1>
                 </div>
                 <div class="header-status">
                     <span class="status-indicator"></span>
@@ -616,7 +612,7 @@
         <!-- Edit Mode -->
         <main class="edit-mode" id="editMode">
             <section class="script-input-section">
-                <h2 class="section-title">Your Script</h2>
+                <h2 class="section-title">Your script</h2>
                 <textarea
                     class="script-textarea"
                     id="scriptInput"
