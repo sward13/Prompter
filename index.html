@@ -914,9 +914,16 @@
         });
 
         // Scrolling animation
+        let rewindHoldUntil = 0;
         function startScrolling() {
             function scroll(timestamp) {
                 if (!state.isPlaying) return;
+
+                if (timestamp < rewindHoldUntil) {
+                    state.lastTimestamp = timestamp;
+                    state.animationId = requestAnimationFrame(scroll);
+                    return;
+                }
 
                 if (state.lastTimestamp === null) {
                     state.lastTimestamp = timestamp;
@@ -970,12 +977,24 @@
         // Rewind by four rendered lines at the current text size.
         function backUpLines() {
             const lineHeight = parseFloat(getComputedStyle(elements.scriptDisplay).lineHeight);
-            elements.scriptContainer.scrollTop = Math.max(0, elements.scriptContainer.scrollTop - lineHeight * 4);
+            const maxScroll = Math.max(0, elements.scriptContainer.scrollHeight - elements.scriptContainer.clientHeight);
+            state.scrollPosition = Math.max(0, Math.min(state.scrollPosition, maxScroll) - lineHeight * 4);
+            elements.scriptContainer.scrollTop = state.scrollPosition;
             state.scrollPosition = elements.scriptContainer.scrollTop;
             state.lastTimestamp = performance.now();
+            rewindHoldUntil = state.lastTimestamp + 1000;
         }
 
-        elements.backBtn.addEventListener('click', backUpLines);
+        // Respond to every touch immediately; the following click must not rewind twice.
+        elements.backBtn.addEventListener('pointerdown', (event) => {
+            if (!event.isPrimary || event.button !== 0) return;
+            event.preventDefault();
+            backUpLines();
+        });
+        elements.backBtn.addEventListener('click', (event) => {
+            // Keyboard and assistive-technology activation has no pointer click count.
+            if (event.detail === 0) backUpLines();
+        });
 
         // Exit teleprompter
         function exitTeleprompter() {
