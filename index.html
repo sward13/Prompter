@@ -568,6 +568,57 @@
             font-weight: bold;
         }
 
+        .touch-controls {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .touch-speed {
+            min-width: 4rem;
+            text-align: center;
+            color: var(--accent-gold);
+            font-family: var(--font-mono);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+        }
+
+        @media (max-width: 1024px), (any-pointer: coarse) {
+            .teleprompter-controls {
+                opacity: 1;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding: 0.75rem max(0.75rem, env(safe-area-inset-right))
+                    max(0.75rem, env(safe-area-inset-bottom))
+                    max(0.75rem, env(safe-area-inset-left));
+                background: var(--bg-dark);
+            }
+
+            .touch-controls { display: flex; }
+            .shortcuts-helper, .keyboard-hint { display: none; }
+
+            .teleprompter-controls .control-btn {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 0.5rem 0.75rem;
+                letter-spacing: 0;
+                touch-action: manipulation;
+            }
+
+            .script-display {
+                padding-bottom: calc(160px + env(safe-area-inset-bottom));
+            }
+        }
+
+        @media (max-width: 540px) {
+            .touch-controls { justify-content: center; width: 100%; }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content {
@@ -581,7 +632,8 @@
             }
 
             .script-display {
-                padding: 0 2rem;
+                padding-left: 2rem;
+                padding-right: 2rem;
             }
 
             .countdown-number {
@@ -668,9 +720,16 @@
                 <span class="speed-value" id="currentSpeed">2.0x</span>
             </div>
 
-            <div class="teleprompter-controls">
-                <button class="control-btn" id="pauseBtn">Pause (Space)</button>
-                <button class="control-btn exit-btn" id="exitBtn">Exit (Esc)</button>
+            <div class="teleprompter-controls" role="group" aria-label="Teleprompter controls">
+                <div class="touch-controls" role="group" aria-label="Speed and text size">
+                    <button class="control-btn" id="slowerBtn" aria-label="Decrease scroll speed">−</button>
+                    <output class="touch-speed" id="touchSpeed" aria-label="Scroll speed" aria-live="polite">2.0x</output>
+                    <button class="control-btn" id="fasterBtn" aria-label="Increase scroll speed">+</button>
+                    <button class="control-btn" id="smallerBtn" aria-label="Decrease text size">A−</button>
+                    <button class="control-btn" id="largerBtn" aria-label="Increase text size">A+</button>
+                </div>
+                <button class="control-btn" id="pauseBtn">Pause<span class="keyboard-hint"> (Space)</span></button>
+                <button class="control-btn exit-btn" id="exitBtn">Exit<span class="keyboard-hint"> (Esc)</span></button>
             </div>
 
             <div class="shortcuts-helper">
@@ -730,7 +789,12 @@
             pauseBtn: document.getElementById('pauseBtn'),
             exitBtn: document.getElementById('exitBtn'),
             speedIndicator: document.getElementById('speedIndicator'),
-            currentSpeed: document.getElementById('currentSpeed')
+            currentSpeed: document.getElementById('currentSpeed'),
+            touchSpeed: document.getElementById('touchSpeed'),
+            slowerBtn: document.getElementById('slowerBtn'),
+            fasterBtn: document.getElementById('fasterBtn'),
+            smallerBtn: document.getElementById('smallerBtn'),
+            largerBtn: document.getElementById('largerBtn')
         };
 
         function formatSpeed(speed) {
@@ -758,6 +822,7 @@
 
         // Save state to localStorage
         function saveState() {
+            updateTouchControls();
             localStorage.setItem('teleprompterState', JSON.stringify({
                 script: state.script,
                 scrollSpeed: state.scrollSpeed,
@@ -894,7 +959,7 @@
         }
 
         function updatePauseButton() {
-            elements.pauseBtn.textContent = state.isPlaying ? 'Pause (Space)' : 'Resume (Space)';
+            elements.pauseBtn.innerHTML = (state.isPlaying ? 'Pause' : 'Resume') + '<span class="keyboard-hint"> (Space)</span>';
             elements.pauseBtn.classList.toggle('playing', state.isPlaying);
         }
 
@@ -959,6 +1024,19 @@
             }
         }
 
+        function updateTouchControls() {
+            elements.touchSpeed.textContent = formatSpeed(state.scrollSpeed);
+            elements.slowerBtn.disabled = state.scrollSpeed <= 0.25;
+            elements.fasterBtn.disabled = state.scrollSpeed >= 5;
+            elements.smallerBtn.disabled = state.textSize === sizes[0];
+            elements.largerBtn.disabled = state.textSize === sizes[sizes.length - 1];
+        }
+
+        elements.slowerBtn.addEventListener('click', () => adjustSpeed(-0.25));
+        elements.fasterBtn.addEventListener('click', () => adjustSpeed(0.25));
+        elements.smallerBtn.addEventListener('click', () => adjustTextSize(-1));
+        elements.largerBtn.addEventListener('click', () => adjustTextSize(1));
+
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
             // Only handle shortcuts in teleprompter mode
@@ -996,6 +1074,7 @@
 
         // Initialize
         loadState();
+        updateTouchControls();
     </script>
 </body>
 </html>
