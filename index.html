@@ -632,7 +632,7 @@
                             type="range"
                             class="slider"
                             id="speedSlider"
-                            min="0.5"
+                            min="0.25"
                             max="5"
                             step="0.25"
                             value="2"
@@ -930,7 +930,7 @@
         // Adjust speed with indicators
         let speedIndicatorTimeout;
         function adjustSpeed(delta) {
-            state.scrollSpeed = Math.max(0.5, Math.min(5, state.scrollSpeed + delta));
+            state.scrollSpeed = Math.max(0.25, Math.min(5, state.scrollSpeed + delta));
             elements.speedSlider.value = state.scrollSpeed;
             elements.speedValue.textContent = formatSpeed(state.scrollSpeed);
             elements.currentSpeed.textContent = formatSpeed(state.scrollSpeed);
