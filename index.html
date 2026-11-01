@@ -728,6 +728,7 @@
                     <button class="control-btn" id="smallerBtn" aria-label="Decrease text size">A−</button>
                     <button class="control-btn" id="largerBtn" aria-label="Increase text size">A+</button>
                 </div>
+                <button class="control-btn" id="backBtn" aria-label="Scroll back four lines">Back 4 lines</button>
                 <button class="control-btn" id="pauseBtn">Pause<span class="keyboard-hint"> (Space)</span></button>
                 <button class="control-btn exit-btn" id="exitBtn">Exit<span class="keyboard-hint"> (Esc)</span></button>
             </div>
@@ -787,6 +788,7 @@
             scriptContainer: document.getElementById('scriptContainer'),
             scriptDisplay: document.getElementById('scriptDisplay'),
             pauseBtn: document.getElementById('pauseBtn'),
+            backBtn: document.getElementById('backBtn'),
             exitBtn: document.getElementById('exitBtn'),
             speedIndicator: document.getElementById('speedIndicator'),
             currentSpeed: document.getElementById('currentSpeed'),
@@ -964,6 +966,16 @@
         }
 
         elements.pauseBtn.addEventListener('click', togglePause);
+
+        // Rewind by four rendered lines at the current text size.
+        function backUpLines() {
+            const lineHeight = parseFloat(getComputedStyle(elements.scriptDisplay).lineHeight);
+            elements.scriptContainer.scrollTop = Math.max(0, elements.scriptContainer.scrollTop - lineHeight * 4);
+            state.scrollPosition = elements.scriptContainer.scrollTop;
+            state.lastTimestamp = performance.now();
+        }
+
+        elements.backBtn.addEventListener('click', backUpLines);
 
         // Exit teleprompter
         function exitTeleprompter() {
